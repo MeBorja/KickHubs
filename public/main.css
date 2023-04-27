@@ -1,0 +1,66 @@
+.object {
+    position: absolute; left: 0px; top: 0px; width: 100px; height: 100px; background-image: url("./img/MicrosoftTeams-image.png");
+}
+
+body {
+    background-image: url("./img/SuperBasedBallBackGround.png");
+    margin: 0;
+}
+.text {
+    color: aliceblue;
+    text-align: center;
+    font-size: 100%;
+}
+.fullScreen {
+    width: 100%;   
+}
+.scoreboard {
+    display: flex;
+    flex-grow: 4;
+    font-size: 50px;
+    color: aliceblue;
+    margin: 0;
+    align-self: center;
+
+}
+.enemy {
+    background-image:url("./img/standard_compressed_sz8318b2.jpg") ;
+    position: absolute;
+    left: 0px; top: 0px; width: 100px; height: 100px
+}
+
+.gameUi {
+    background-color: darkblue;
+    display: flex;
+    justify-content: center; 
+}
+.logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    flex-grow: 3;
+  }
+
+  #superbased {
+    height: 35px;
+  }
+
+  #devolved {
+    height: 25px;
+  }
+
+  .heart {
+    height: 50px;
+    padding-top: 5px;
+    padding-right: 5px;
+  }
+
+  .health {
+    padding-top: 5px;
+    flex-grow: 3;
+    display: flex;
+    align-self: center;
+    padding-right: 10px;
+  }

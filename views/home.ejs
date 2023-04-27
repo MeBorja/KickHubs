@@ -1,0 +1,34 @@
+<%- include('partials/header'); -%>
+<script>
+  document.querySelector('body').addEventListener("keydown", function(e) {
+    let key_code = e.keyCode
+    switch (key_code) {
+        case 32:// key pressed space
+        console.log("space");
+        window.location.href = '/game'
+            break;
+        default:
+            break;
+    }
+    
+  })
+
+</script>
+
+
+
+<div class="main-meny">
+  <% if (user) { %>
+  <button class="btn" style="font-size: larger;"><a href="/game">PRESS SPACEBAR TO START THE GAME</a></button>
+  <button class="btn"><a href="/scoreboard">SCOREBOARD</a></button>
+  <% if (user.admin) { %>
+    <button class="btn"><a href="/veileder">VEILEDER</a></button>
+  <% } %>
+  <% } else { %>
+  <button class="btn" style="font-size: larger;"><a href="/login">LOGIN TO PLAY THE GAME</a></button>
+  <% } %>
+
+
+</div>
+
+<%- include('partials/footer'); -%>
