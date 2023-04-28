@@ -37,6 +37,7 @@ const app = express();
     app.get('/veileder', checkAdmin, requireAuth, (req, res) => res.render('veileder'))
     app.get('/game',requireAuth, checkUser, (req, res) => res.render('game') )
     app.get('/404',checkUser ,(req, res) => res.render('404'))
+    app.get('/gamerules', requireAuth, (req, res) => res.render('gamerules'))
     app.use(authRoutes)
 
    
