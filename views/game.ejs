@@ -12,16 +12,16 @@
 <body>
     <nav class="gameUi">
         <div class="logo">
-            <a href="/"><img id="superbased" src="/superbased.png" alt=""></a>
-            <a href="/"><img id="devolved"src="/devolved.png" alt=""></a>
+            <a href="/"><img id="superbased" src="/img/superbased.png" alt=""></a>
+            <a href="/"><img id="devolved"src="/img/devolved.png" alt=""></a>
           </div>
     <!-- scoreboard -->
     <h1 class="scoreboard">0</h1>
 
     <div class="health">
-        <img src="/heart.png" class="heart" id="heart1" alt="" srcset="">
-        <img src="/heart.png" class="heart" id="heart2" alt="" srcset="">
-        <img src="/heart.png" class="heart" id="heart3" alt="" srcset="">
+        <h1 class="hp">3</h1>
+        <img src="/img/heart.png" class="heart" id="heart1" alt="" srcset="">
+        <h1 class="super">SUPER CHARGE</h1>
     </div>
     </nav>
 
@@ -44,6 +44,8 @@ let objImage = document.querySelector('.object'); //player
 let enemy = document.querySelector(".enemy") //enemy npc
 let scoreboard = document.querySelector('.scoreboard') //scoreboard
 let playerName = document.querySelector("#coock").innerText
+let playerHp = document.querySelector(".hp")
+let charge = document.querySelector(".super")
 
 
 
@@ -53,14 +55,19 @@ let playerName = document.querySelector("#coock").innerText
 let leftPosition = (window.innerWidth - 100) // player start nd current position 
 let topPosition = (window.innerHeight - 100) // player start nd current position 
 let topEnemy = 78 // enemy current and start position
-let leftEnemy = 0 // enemyt current and start position
+let leftEnemy = 1 // enemyt current and start position
 const speed = 10// game speed
-let enemySpeed = speed
+let playerSpeed = speed
+let enemySpeed = speed - 9
+
 let score = 0 //current score
 let isInside = 0 // if enemy is inside player
 let hp = 3
 let enemywidth = 100
 let enemyhieght = 100
+let playerCharge = 0
+let playerChargeReady = 0
+let sec = 0
 const startTopPostion = topPosition
 const startLeftPostion = leftPosition
 const enemyStartLeftPostion = topEnemy
@@ -82,7 +89,7 @@ function startRun () {
     objImage.style.top = topPosition + "px"
 } //function for starting the game ( moves player to start position)
 function moveLeft() {
-    leftPosition -= speed;
+    leftPosition -= playerSpeed;
     if (leftPosition < boundsPlayer.left) {
       leftPosition = boundsPlayer.left;// sets player position to bounds position  
     } //cheacks if player is inside bounds
@@ -90,7 +97,7 @@ function moveLeft() {
 } // moves the player left
 
 function moveUp() {
-    topPosition -= speed;
+    topPosition -= playerSpeed;
     if (topPosition < boundsPlayer.top) {
       topPosition = boundsPlayer.top;// sets player position to bounds position  
     }//cheacks if player is inside bounds
@@ -98,7 +105,7 @@ function moveUp() {
 }// moves the player up
 
 function moveRight() {
-    leftPosition += speed;
+    leftPosition += playerSpeed;
     if (leftPosition > boundsPlayer.right) {
       leftPosition = boundsPlayer.right;// sets player position to bounds position  
     }//cheacks if player is inside bounds
@@ -106,7 +113,7 @@ function moveRight() {
 }// moves the player right
 
 function moveDown() {
-    topPosition += speed;
+    topPosition += playerSpeed;
     if (topPosition > boundsPlayer.bottom) {
       topPosition = boundsPlayer.bottom;// sets player position to bounds position  
     }//cheacks if player is inside bounds
@@ -128,6 +135,11 @@ document.querySelector('body').addEventListener("keydown", function (e) { //anon
         case 40://key pressed down
             moveDown();
             break;
+            case 32://key pressed down
+            if (playerChargeReady == 1) {
+              superChargeOn()
+            }
+            break;
         default:// breakes code if up donw left right was not pressed
             break;
     }
@@ -147,8 +159,8 @@ function enemyMoveRight() {
 
 function enemyMoveLeft() {
     leftEnemy -= enemySpeed;
-    if (leftEnemy > boundsEnemy.right) {
-      leftEnemy = boundsEnemy.right;// sets enemy position to bounds position  
+    if (leftEnemy < boundsEnemy.left) {
+      leftEnemy = boundsEnemy.left;// sets enemy position to bounds position  
     }//cheacks if enemy is inside bounds
     enemy.style.left = leftEnemy + "px";
 }// moves the enemy down
@@ -185,7 +197,21 @@ function followObject() {
     const distanceY = objRect.y - enemyRect.y;
     
     // move enemy closer to objImage
-    if (distanceX > 0) {
+    if (playerCharge == 1) {
+      if (distanceX < 0) {
+      enemyMoveRight();
+    } else if (distanceX > 0) {
+      enemyMoveLeft();
+    }
+    
+    if (distanceY < 0) {
+      enemyMoveDown();
+    } else if (distanceY > 0) {
+      enemyMoveUp();
+    }
+    }
+    if (playerCharge == 0) {
+      if (distanceX > 0) {
       enemyMoveRight();
     } else if (distanceX < 0) {
       enemyMoveLeft();
@@ -196,6 +222,9 @@ function followObject() {
     } else if (distanceY < 0) {
       enemyMoveUp();
     }
+    
+    }
+
     
     if (!(
         objRect.right < enemyRect.left || 
@@ -220,11 +249,17 @@ function sizeEnemy() {
     enemy.style.width = enemywidth + "px"
     enemy.style.height = enemyhieght + "px"
 }
+function enemySpeedUpdate() {
+  enemySpeed = enemySpeed + 1
+}
+function updateHp() {
+    playerHp.innerText = hp
+}
 
   async function addScore () {
-    if (isInside == 1) //cheack if enemy inside player
-        {
-            hp = hp - 1
+    if (isInside == 1) { //cheack if enemy inside player
+        if (playerCharge == 0) {
+          hp = hp - 1
             if (hp == 0) {
               const topScore = score
               try {
@@ -234,7 +269,7 @@ function sizeEnemy() {
             headers: {'Content-Type': 'application/json'}
                 });
             const data = await res.json()
-                
+            window.location.replace("/scoreboard");
             if (data.errors) {
                 console.log(data.errors);
             }
@@ -247,6 +282,7 @@ function sizeEnemy() {
         
             }
             console.log(hp)
+            updateHp()
             topPosition = startTopPostion
             leftPosition =startLeftPostion
             topEnemy = enemyStartLeftPostion
@@ -256,15 +292,74 @@ function sizeEnemy() {
             enemy.style.left = leftEnemy + "px";
             enemy.style.top = topEnemy + "px";
             ; //takes away score if enemy is inside player
-    } else { // if not player gets score
+    } else if (playerCharge == 1) {
+          hp = hp +1 
+          updateHp()
+          topPosition = startTopPostion
+            leftPosition =startLeftPostion
+            topEnemy = enemyStartLeftPostion
+            leftEnemy = enemyStartTopPostion
+            objImage.style.top = topPosition + "px";
+            objImage.style.left = leftPosition + "px";
+            enemy.style.left = leftEnemy + "px";
+            enemy.style.top = topEnemy + "px"
+
+          score = score + 1
+        scoreboard.innerText = score
+        if (playerCharge == 1) {
+          console.log(sec);
+            if (sec > 4) {
+              console.log("job done");
+              sec = 0
+              superChargeOff()
+            } else {
+              charge.style.color="red"
+
+            sec = sec + 1
+            }
+          }}}  else { // if not player gets score
         score = score + 1
         scoreboard.innerText = score
-    }
+        if (playerCharge == 1) {
+          console.log(sec);
+            if (sec > 4) {
+              console.log("job done");
+              sec = 0
+              superChargeOff()
+            } else {
+              charge.style.color="red"
+            sec = sec + 1
+            }
+          
+        }
+    }   
+ 
+  }
+
+  function superChargeReady() {
+    console.log("charge is ready");
+    playerChargeReady = 1
+    charge.style.color="white"
+  }
+  function superChargeOn() {
+    console.log("charge is on");
+    playerCharge = 1
+    playerSpeed = speed + speed
+  }
+  function superChargeOff() {
+    console.log("charge is of");
+    playerCharge = 0
+    playerChargeReady = 1
+    charge.style.color="black"
+    playerSpeed = speed
   }
   
+  
   // call followObject() function every 1000 milliseconds to move enemy
+  setInterval(enemySpeedUpdate, 10000)
   setInterval(sizeEnemy, 60000)
   setTimeout(setInterval(followObject, 50), 1000)
+  setInterval(superChargeReady, 60000)
   setInterval(addScore, 1000) // turns on score counter
     </script>
 </body>

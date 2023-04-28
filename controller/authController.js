@@ -106,3 +106,13 @@ module.exports.score_post = async (req, res) => {
   }
   
 }
+module.exports.deleteScore_post = async (req, res) => {
+  const { id } = req.body;
+  try {
+    const scorePlayer = await Score.findByIdAndDelete({_id : id})
+    res.status(201)
+  } catch (error) {
+    console.log(error);
+  }
+  
+}

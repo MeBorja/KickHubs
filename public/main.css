@@ -64,3 +64,9 @@ body {
     align-self: center;
     padding-right: 10px;
   }
+
+  .hp {
+    font-size: 50px;
+    color: aliceblue;
+    margin: 0;
+  }
